@@ -1,29 +1,12 @@
-# HMFront
+# HM-BACK
+this is the server from https://github.com/SaulLlamas/cursoAngular-udemy
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.0.
+## Requirement for run the server
+    - Download and install node from https://nodejs.org/es/
+    - Download and install mongodb from https://www.mongodb.com/download-center#community
+    - Config mongodb
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-
+## Steps for furn the server
+    1.  open terminal as admin and run the command mongod (when you close this terminal mongo not work )
+    2.  open a new terminal as admin in the project folder where are the file package.json
+    3.  In the second terminal run the command npm start
