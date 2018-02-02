@@ -23,7 +23,7 @@ let port = 27017;
  * @description nombre de la base de datos
  * @type {string}
  */
-let db = 'slp-HospitalesCurso';
+let db = 'slp-Hospitals';
 
 module.exports.URI  = `mongodb://${dns}:${port}/${db}`;
 
