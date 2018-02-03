@@ -7,7 +7,18 @@
  */
 
 //Importacion de mongoose
-const mongoose = require('mongoose');
+let mongoose = require('mongoose');
+//Importación de unique validator de mongoose que permitira validar campos unicos  en mongo
+let uniqueValidator = require('mongoose-unique-validator');
+
+/**
+ * validRoles => variable que guarda un objeto que valida el valor del campo user_role del Schema del usuario
+ * @type {{values: [*], message: string}}
+ */
+let validRoles = {
+  values:['normal','admin'],
+  message:'El valor {VALUE} no es valido para {PATH}'
+};
 
 /**
  * Schema => Guarda una referencia al modelo Schema de mongoose
@@ -21,16 +32,20 @@ const UserSchema = Schema({
         type:String,
         required:true
     },
+    //Sexo del usuario
+    user_sex:{
+        type:String,
+        required:true
+    },
     //Mail del usuario
-    user_email:{
+    user_mail:{
         type:String,
         unique:true,
         required:true
     },
     //Contraseña del usuario
-    user_passwosd:{
+    user_password:{
         type:String,
-        unique:true,
         required:true
     },
     //Imagen del usuario
@@ -42,9 +57,13 @@ const UserSchema = Schema({
     user_role:{
         type:String,
         required:true,
-        default:'USER_ROLE'
+        default:'normal',
+        enum:validRoles
     }
 });
+
+//El Schema utilizara unique validator para la validación
+UserSchema.plugin(uniqueValidator,{message:"el campo {PATH} debe ser unico"});
 
 //Declaracion del modelo
 /*
