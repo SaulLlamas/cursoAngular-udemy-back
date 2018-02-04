@@ -61,7 +61,7 @@ app.put("/:id",(request,response)=>{
     //Obtención de los nuevon valores para el usuario mandados en el cuerpo de la petición
     let body = request.body;
 
-
+    //Se busca el usuario que se quiere actualizar con la funcion findById()
     User.findById(user_id,(error,userfound)=> {
 
         //Si hay un error sera error 500
@@ -98,6 +98,7 @@ app.put("/:id",(request,response)=>{
                 userfound.user_role = body.user_role
             }
 
+            //Se aplica la funcion save para guardar los cambios en la base de datos
             userfound.save((error , userupdated)=>{
 
                 if(error){
@@ -107,6 +108,10 @@ app.put("/:id",(request,response)=>{
                         errors:error
                     });
                 }else{
+
+                    //La contraseña del usuario nunca se envia al front tal como esta en la base de datos
+                    userupdated.user_password = "****";
+
                     return response.status(200).json({
                         ok:true,
                         message:"usuario " +user_id+" actualizado correctamente",
@@ -127,7 +132,7 @@ app.put("/:id",(request,response)=>{
 //Insertar usuario
 //=====================================================================
 //petición post
-app.post("/",(request,response)=>{
+app.post("/",(request,response)=> {
     /**
      * La variable body contiene los parametros enviados en  el duerpo de la petición post
      * Para aceder a los parametros se utiliza request.body
@@ -139,36 +144,65 @@ app.post("/",(request,response)=>{
      * Creación de un nuevo objeto usuario basandose en los parametros optenidos del body
      */
     let user = new User({
-        user_name:body.user_name,
-        user_sex:body.user_sex,
+        user_name: body.user_name,
+        user_sex: body.user_sex,
         //Para encriptar la contraseña del usuario se utiliza la funcion hashSync de bcriptjs
-        user_password:bcryptjs.hashSync(body.user_password,10),
-        user_mail:body.user_mail,
-        user_img:body.user_img,
-        user_role:body.user_role
+        user_password: bcryptjs.hashSync(body.user_password, 10),
+        user_mail: body.user_mail,
+        user_img: body.user_img,
+        user_role: body.user_role
     });
     //Para guardar el usuario creado en la base de datos se utilizara la función save
-    user.save((error , userSaved)=>{
+    user.save((error, userSaved) => {
         //Si ha habido algun error al guardar el usuario el estado sera error 500 y se devolvera el error en el json de salida
-        if(error){
+        if (error) {
             return response.status(400).json({
-                ok:false,
-                message:"Error al guardar el usuario",
-                errors:error
+                ok: false,
+                message: "Error al guardar el usuario",
+                errors: error
             })
-        //En caso de que no halla habido ningun error el estado sera 200 y se  devolvera el objeto usuario salvado
-        }else{
+            //En caso de que no halla habido ningun error el estado sera 200 y se  devolvera el objeto usuario salvado
+        } else {
             return response.status(201).json({
-                ok:true,
-                message:"Usuario guardado correctamente",
-                user_saved:userSaved
+                ok: true,
+                message: "Usuario guardado correctamente",
+                user_saved: userSaved
             })
         }
     });
+});
 
+//============================================================
+//DELETE USER
+//============================================================
+app.delete("/:id",(request , response)=>{
 
+    //Obtención del id del usuario que se va ha borrar mandado como parametro en la URL
+    let user_id = request.params.id;
 
-
+    User.findByIdAndRemove({_id:user_id},(error,userDeleted)=>{
+        if(error){
+            return response.status(500).json({
+                ok:false,
+                message:"Error al borrar usuario ",
+                errors:error
+            });
+        }
+        if(!userDeleted){
+            return response.status(404).json({
+                ok:false,
+                message:"No se pudo encontrar en usuario con el id "+user_id,
+                errors:error
+            });
+        }
+        if(userDeleted){
+            return response.status(200).json({
+                ok:true,
+                message:"El  usuario "+user_id+" se ha borrado correctamente"
+            });
+        }
+    });
+    
 });
 
 module.exports = app;
