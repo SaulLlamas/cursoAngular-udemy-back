@@ -177,7 +177,7 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
             //En caso de que no halla habido ningun error el estado sera 200 y se  devolvera el objeto usuario salvado
         } else {
 
-            userSaved.user_password = "****"
+            userSaved.user_password = "****";
 
             return response.status(201).json({
                 ok: true,
