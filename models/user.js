@@ -5,7 +5,9 @@
  * @version 1.0
  * @since 02-02-18
  */
-
+//=======================================================
+//Importación de dependencias de node
+//=======================================================
 //Importacion de mongoose
 let mongoose = require('mongoose');
 //Importación de unique validator de mongoose que permitira validar campos unicos  en mongo

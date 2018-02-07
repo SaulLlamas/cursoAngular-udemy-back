@@ -1,20 +1,23 @@
 /**
  * @summary Fichero de configuración de rutas relacionadas con el usuario
- * @description Fichero principal de configuracion de rutas a las que se va a hacer peticiones relacionanas con el usuario
+ * @description Fichero de configuracion de rutas a las que se va a hacer peticiones relacionanas con el usuario
  * @author Saul Llamas Parra
  * @version 1.0
  * @since 02-02-18
  */
 
 //=======================================================
-//Importación utilizando require()
+//Importación de dependencias de node
 //=======================================================
 //Importación de express
 let express = require('express');
 //Importacion de bcryptjs para encriptacion de contraseñas
-let bcryptjs = require('bcryptjs')
+let bcryptjs = require('bcryptjs');
 
-
+//============================================================
+//Importación de middlewares
+//============================================================
+let mdAuth = require('../middlewares/auth');
 
 //=======================================================
 //Importación de los modelos utilizados
@@ -22,6 +25,10 @@ let bcryptjs = require('bcryptjs')
 //Importacion del modelo user
 let User = require('../models/user');
 
+/**
+ * Referencia a express en la variable app
+ * @type {*}
+ */
 let  app = express();
 
 
@@ -50,11 +57,15 @@ app.get("/",(request,response)=>{
         });
 });
 
+
+
+
+
 //=====================================================================
 //Actualizar usuario
 //=====================================================================
 //petición put
-app.put("/:id",(request,response)=>{
+app.put("/:id",mdAuth.verifyToken,(request,response)=>{
 
     //Obtención del id del usuario que se va ha actualizar mandado como parametro en la URL
     let user_id = request.params.id;
@@ -112,10 +123,12 @@ app.put("/:id",(request,response)=>{
                     //La contraseña del usuario nunca se envia al front tal como esta en la base de datos
                     userupdated.user_password = "****";
 
+
                     return response.status(200).json({
                         ok:true,
                         message:"usuario " +user_id+" actualizado correctamente",
-                        user_updated:userupdated
+                        user_updated:userupdated,
+                        updated_by:request.user_token
                     });
                 }
 
@@ -132,7 +145,7 @@ app.put("/:id",(request,response)=>{
 //Insertar usuario
 //=====================================================================
 //petición post
-app.post("/",(request,response)=> {
+app.post("/",mdAuth.verifyToken,(request,response)=> {
     /**
      * La variable body contiene los parametros enviados en  el duerpo de la petición post
      * Para aceder a los parametros se utiliza request.body
@@ -163,10 +176,14 @@ app.post("/",(request,response)=> {
             })
             //En caso de que no halla habido ningun error el estado sera 200 y se  devolvera el objeto usuario salvado
         } else {
+
+            userSaved.user_password = "****"
+
             return response.status(201).json({
                 ok: true,
                 message: "Usuario guardado correctamente",
-                user_saved: userSaved
+                user_saved: userSaved,
+                created_by:request.user_token
             })
         }
     });
@@ -175,7 +192,7 @@ app.post("/",(request,response)=> {
 //============================================================
 //DELETE USER
 //============================================================
-app.delete("/:id",(request , response)=>{
+app.delete("/:id",mdAuth.verifyToken,(request , response)=>{
 
     //Obtención del id del usuario que se va ha borrar mandado como parametro en la URL
     let user_id = request.params.id;
@@ -198,7 +215,9 @@ app.delete("/:id",(request , response)=>{
         if(userDeleted){
             return response.status(200).json({
                 ok:true,
-                message:"El  usuario "+user_id+" se ha borrado correctamente"
+                message:"El  usuario "+user_id+" se ha borrado correctamente",
+                user_deleted:userDeleted,
+                deleted_by:request.user_token
             });
         }
     });

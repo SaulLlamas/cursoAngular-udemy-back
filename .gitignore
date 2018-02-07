@@ -9,3 +9,6 @@
 *.launch
 .settings/
 *.sublime-workspace
+
+#Npm
+npm*

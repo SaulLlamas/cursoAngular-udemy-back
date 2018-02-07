@@ -7,7 +7,7 @@
  */
 
 //=======================================================
-//Importación utilizando require()
+//Importación de dependencias de node
 //=======================================================
 
 //Importación de express
@@ -20,7 +20,6 @@ let mongoose = require('mongoose');
 let bodyParser = require('body-parser');
 
 //=======================================================
-
 //Importación de ficheros de configuración
 //=======================================================
 
@@ -37,6 +36,8 @@ let mongoose_conf = require('./config/mongooseConfig');
 let app_router = require('./router/app.router');
 //Archivo de rutas para user
 let user_router = require('./router/user.router');
+//Archivo de rutas para el login
+let login_router = require('./router/login.router');
 
 
 //=======================================================
@@ -52,16 +53,16 @@ const app = express();
 //Middleware de body-parser => Permite parsear la informacion de la peticiones a formato json
 //=========================================================
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 //=======================================================
 //Middleware de rutas
 //=========================================================
+app.use('/login',login_router);
 app.use('/user',user_router);
 app.use('/',app_router);
-
 
 app.listen(express_conf.express_port,()=>{
     //El texto entre \x1b[32m y \x1b[0m saldra por consola de color verde

@@ -6,7 +6,7 @@
  * @since 02-02-18
  */
 //=======================================================
-//Importación utilizando require()
+//Importación de dependencias de node
 //=======================================================
 //Importación de express
 let express = require('express');
