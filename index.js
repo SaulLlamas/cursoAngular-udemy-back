@@ -38,6 +38,8 @@ let app_router = require('./router/app.router');
 let user_router = require('./router/user.router');
 //Archivo de rutas para el login
 let login_router = require('./router/login.router');
+//Archivo de rutas para hospital
+let hospital_router  = require('./router/hospital.router')
 
 
 //=======================================================
@@ -62,6 +64,7 @@ app.use(bodyParser.json());
 //=========================================================
 app.use('/login',login_router);
 app.use('/user',user_router);
+app.use('/hospital',hospital_router);
 app.use('/',app_router);
 
 app.listen(express_conf.express_port,()=>{

@@ -17,13 +17,14 @@ let bcryptjs = require('bcryptjs');
 //============================================================
 //Importación de middlewares
 //============================================================
+//Middleware de autentificación
 let mdAuth = require('../middlewares/auth');
 
 //=======================================================
 //Importación de los modelos utilizados
 //=======================================================
-//Importacion del modelo user
-let User = require('../models/user');
+//Importacion del modelo hospital
+let Hospital = require('../models/hospital');
 
 /**
  * Referencia a express en la variable app
@@ -31,103 +32,93 @@ let User = require('../models/user');
  */
 let  app = express();
 
-
 //=====================================================================
-//Listar todos los usuarios
+//Listar todos los hospitales
 //=====================================================================
 //Peticion get
 app.get("/",(request,response)=>{
 
-
-    User.find({},'user_name user_sex user_mail user_img user_role')
+    //para la obtencion de todos los hospitales se utiliza la funcion find sin argumentos
+    Hospital.find({})
         .exec(
-            (error,users)=>{
-            if(error){
-               return response.status(500).json({
-                    ok:false,
-                    message:"Error al obtener datos ",
-                    errors:error
-                })
-            }else{
-                return response.status(200).json({
-                    ok:true,
-                    users:users
-                })
+            (error,hospitals)=>{
+                if(error){
+                    return response.status(500).json({
+                        ok:false,
+                        message:"Error al obtener datos ",
+                        errors:error
+                    })
+                }else{
+                    return response.status(200).json({
+                        ok:true,
+                        hospitals:hospitals
+                    })
+                }
             }
-        });
+        );
 });
 
-
-
-
-
 //=====================================================================
-//Actualizar usuario
+//Actualizar hospital
 //=====================================================================
 //petición put
 app.put("/:id",mdAuth.verifyToken,(request,response)=>{
 
-    //Obtención del id del usuario que se va ha actualizar mandado como parametro en la URL
+    //Obtención del id del hospital que se va ha actualizar mandado como parametro en la URL
     let user_id = request.params.id;
     //Obtención de los nuevon valores para el usuario mandados en el cuerpo de la petición
     let body = request.body;
 
     //Se busca el usuario que se quiere actualizar con la funcion findById()
-    User.findById(user_id,(error,userfound)=> {
+    Hospital.findById(user_id,(error,hospitalfound)=> {
 
         //Si hay un error sera error 500
         if(error){
             return response.status(500).json({
                 ok:false,
-                message:"Error al buscar usuario ",
+                message:"Error al buscar el hospital ",
                 errors:error
             });
         }
 
-        //Si no ha habido ningun error y no se ha obtenido un objeto usuario entonces es que no existe
-        if(!userfound){
+        //Si no ha habido ningun error y no se ha obtenido un objeto hospital entonces es que no existe
+        if(!hospitalfound){
             return response.status(404).json({
                 ok:false,
-                message:"El usuario con el id "+id+" no se encontro en la base de datos",
+                message:"El hospital no se encontro en la base de datos",
             });
         }
 
-        //En caso de que se halla encontrado el usuario con el id especificado
-        if(userfound){
+        //En caso de que se halla encontrado el hospital con el id especificado
+        if(hospitalfound){
 
             //Se comprueba que parametros se han mandado en el body para actualizarlos
-            if(body.user_name){
-                userfound.user_name = body.user_name
+            if(body.hosp_name){
+                hospitalfound.hosp_name = body.hosp_name;
             }
-            if(body.user_sex){
-                userfound.user_sex = body.user_sex
+            if(body.hosp_img){
+                hospitalfound.hosp_img = body.hosp_img;
             }
-            if(body.user_mail){
-                userfound.user_mail = body.user_mail
-            }
-            if(body.user_role){
-                userfound.user_role = body.user_role
+            if(body.hosp_user){
+                hospitalfound.hosp_user = body.hosp_user;
             }
 
             //Se aplica la funcion save para guardar los cambios en la base de datos
-            userfound.save((error , userupdated)=>{
+            hospitalfound.save((error , hospitlupdated)=>{
 
                 if(error){
                     return response.status(403).json({
                         ok:false,
-                        message:"No se pudo actualizar el usuario "+id+" ",
+                        message:"No se pudo actualizar el hospital",
                         errors:error
                     });
                 }else{
 
-                    //La contraseña del usuario nunca se envia al front tal como esta en la base de datos
-                    userupdated.user_password = "****";
-
 
                     return response.status(200).json({
                         ok:true,
-                        message:"usuario " +user_id+" actualizado correctamente",
-                        user_updated:userupdated,
+                        message:"hospital " +user_id+" actualizado correctamente",
+                        hospital_updated:hospitlupdated,
                         updated_by:request.user_token
                     });
                 }
@@ -142,7 +133,7 @@ app.put("/:id",mdAuth.verifyToken,(request,response)=>{
 
 
 //=====================================================================
-//Insertar usuario
+//Insertar hospital
 //=====================================================================
 //petición post
 app.post("/",mdAuth.verifyToken,(request,response)=> {
@@ -154,35 +145,29 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
     let body = request.body;
 
     /**
-     * Creación de un nuevo objeto usuario basandose en los parametros optenidos del body
+     * Creación de un nuevo objeto hospital basandose en los parametros optenidos del body
      */
-    let user = new User({
-        user_name: body.user_name,
-        user_sex: body.user_sex,
-        //Para encriptar la contraseña del usuario se utiliza la funcion hashSync de bcriptjs
-        user_password: bcryptjs.hashSync(body.user_password, 10),
-        user_mail: body.user_mail,
-        user_img: body.user_img,
-        user_role: body.user_role
+    let hospital = new Hospital({
+        hosp_name:body.hosp_name,
+        hosp_img:body.hosp_img,
+        hosp_user:request.user_token._id
     });
-    //Para guardar el usuario creado en la base de datos se utilizara la función save
-    user.save((error, userSaved) => {
-        //Si ha habido algun error al guardar el usuario el estado sera error 400 y se devolvera el error en el json de salida
+    //Para guardar el hospital creado en la base de datos se utilizara la función save
+    hospital.save((error, hospitalSaved) => {
+        //Si ha habido algun error al guardar el hospital el estado sera error 400 y se devolvera el error en el json de salida
         if (error) {
             return response.status(400).json({
                 ok: false,
-                message: "Error al guardar el usuario",
+                message: "Error al guardar el hospital",
                 errors: error
             })
-            //En caso de que no halla habido ningun error el estado sera 200 y se  devolvera el objeto usuario salvado
+            //En caso de que no halla habido ningun error el estado sera 201 y se  devolvera el objeto creado
         } else {
-
-            userSaved.user_password = "****";
 
             return response.status(201).json({
                 ok: true,
-                message: "Usuario guardado correctamente",
-                user_saved: userSaved,
+                message: "Hospital "+hospitalSaved.hosp_name+" creado correctamente",
+                hospital_saved:hospitalSaved,
                 created_by:request.user_token
             })
         }
@@ -190,33 +175,33 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
 });
 
 //============================================================
-//DELETE USER
+//Borrar Hospital
 //============================================================
 app.delete("/:id",mdAuth.verifyToken,(request , response)=>{
 
-    //Obtención del id del usuario que se va ha borrar mandado como parametro en la URL
-    let user_id = request.params.id;
+    //Obtención del id del hospital que se va ha borrar mandado como parametro en la URL
+    let hospital_id = request.params.id;
 
-    User.findByIdAndRemove({_id:user_id},(error,userDeleted)=>{
+    Hospital.findByIdAndRemove({_id:hospital_id},(error,hospitalDeleted)=>{
         if(error){
             return response.status(500).json({
                 ok:false,
-                message:"Error al borrar usuario ",
+                message:"Error al borrar el hospital ",
                 errors:error
             });
         }
-        if(!userDeleted){
+        if(!hospitalDeleted){
             return response.status(404).json({
                 ok:false,
-                message:"No se pudo encontrar en usuario con el id "+user_id,
+                message:"No se pudo encontrar el hospital cone el id " + hospital_id,
                 errors:error
             });
         }
-        if(userDeleted){
+        if(hospitalDeleted){
             return response.status(200).json({
                 ok:true,
-                message:"El  usuario "+user_id+" se ha borrado correctamente",
-                user_deleted:userDeleted,
+                message:"El  hospital "+hospital_id+" se ha borrado correctamente",
+                hospital_deleted:hospitalDeleted,
                 deleted_by:request.user_token
             });
         }
@@ -225,4 +210,5 @@ app.delete("/:id",mdAuth.verifyToken,(request , response)=>{
 
 });
 
+//Exportacion del  modulo
 module.exports = app;
