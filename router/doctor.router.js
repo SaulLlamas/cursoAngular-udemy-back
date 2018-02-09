@@ -101,9 +101,6 @@ app.put("/:id",mdAuth.verifyToken,(request,response)=>{
             if(body.dctr_name){
                 doctorfound.dctr_name = body.dctr_name
             }
-            if(body.dctr_img){
-                doctorfound.dctr_img = body.dctr_img
-            }
             if(body.dctr_user){
                 doctorfound.dctr_user = body.dctr_user
             }
@@ -159,7 +156,6 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
     let doctor = new Doctor({
         _id:body.dctr_dni,
         dctr_name:body.dctr_name,
-        dctr_img:body.dctr_img,
         dctr_hospital:body.dctr_hospital,
         dctr_user:request.user_token._id
     });

@@ -95,13 +95,9 @@ app.put("/:id",mdAuth.verifyToken,(request,response)=>{
             if(body.hosp_name){
                 hospitalfound.hosp_name = body.hosp_name;
             }
-            if(body.hosp_img){
-                hospitalfound.hosp_img = body.hosp_img;
-            }
             if(body.hosp_user){
                 hospitalfound.hosp_user = body.hosp_user;
             }
-
             if(body.hosp_city){
                 hospitalfound.hosp_city = body.hosp_city;
             }
@@ -156,7 +152,6 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
      */
     let hospital = new Hospital({
         hosp_name:body.hosp_name,
-        hosp_img:body.hosp_img,
         hosp_city:body.hosp_city,
         hosp_state:body.hosp_state,
         hosp_user:request.user_token._id
