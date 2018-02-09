@@ -1,9 +1,9 @@
 /**
- * @summary Modelo de datos hospital
- * @description Fichero que contiene el modelo de datos de mongoose para los hospitales
+ * @summary Modelo de datos doctor
+ * @description Fichero que contiene el modelo de datos de mongoose para los doctores
  * @author Saul Llamas Parra
  * @version 1.0
- * @since 07-02-18
+ * @since 08-02-18
  */
 //=======================================================
 //Importación de dependencias de node
@@ -26,39 +26,40 @@ const Schema = mongoose.Schema;
  * @type {Model}
  */
 const User = mongoose.model("User");
+const Hospital  = mongoose.model("Hospital");
 
-const HospitalSchema = Schema({
-   //Nombre del hospital
-   hosp_name:{
-       type:String,
-       required:true,
-       unique:true
-   },
-   //Ciudad en la que se encuentra el hospital
-   hosp_city:{
-       type:String,
-       required:true
-   },
-   //Provincia en la que se encuentra el hospital
-    hosp_state:{
+
+const DoctorSchema = Schema({
+    //Identificación del doctor
+    _id:{
         type:String,
         required:true
     },
-   //Imagen del hospital
-   hosp_img:{
-       type:String
-   },
-   //Referencia al usuario que creo al hospital
-   hosp_user:{
-       type:Schema.Types.ObjectId,
-       ref:'User',
-       required:true
-   }
-
+    //Nombre completo del doctor
+    dctr_name:{
+        type:String,
+        required:true
+    },
+    //Imagen
+    dctr_img:{
+        type:String
+    },
+    //Hospital al que pertenece el doctor
+    dctr_hospital:{
+        type:Schema.Types.ObjectId,
+        ref:'Hospital',
+        required:true
+    },
+    //Usuario que creo el doctor
+    dctr_user:{
+        type:Schema.Types.ObjectId,
+        ref:'User',
+        required:true
+    }
 });
 
 //El Schema utilizara unique validator para la validación
-HospitalSchema.plugin(uniqueValidator,{message:"el campo {PATH} debe ser unico"});
+DoctorSchema.plugin(uniqueValidator,{message:"el campo {PATH} debe ser unico"});
 
 //Declaracion del modelo
 /*
@@ -67,10 +68,7 @@ HospitalSchema.plugin(uniqueValidator,{message:"el campo {PATH} debe ser unico"}
  2.   Estructura
  */
 
-let  HospitalModel = mongoose.model('Hospital',HospitalSchema);
+let  DoctorModel = mongoose.model('Doctor',DoctorSchema);
 
 //Con module export se exporta el modelo del usuario para que se pueda acceder desde fuera
-module.exports = HospitalModel;
-
-
-
+module.exports = DoctorModel;

@@ -1,9 +1,9 @@
 /**
- * @summary Fichero de configuración de rutas relacionadas con el usuario
- * @description Fichero de configuracion de rutas a las que se va a hacer peticiones relacionanas con el usuario
+ * @summary Fichero de configuración de rutas relacionadas con el doctor
+ * @description Fichero de configuracion de rutas a las que se va a hacer peticiones relacionanas con el objeto doctor
  * @author Saul Llamas Parra
  * @version 1.0
- * @since 02-02-18
+ * @since 09-02-18
  */
 
 //=======================================================
@@ -23,7 +23,9 @@ let mdAuth = require('../middlewares/auth');
 //Importación de los modelos utilizados
 //=======================================================
 //Importacion del modelo hospital
-let Hospital = require('../models/hospital');
+let Doctor = require('../models/doctor');
+
+
 
 /**
  * Referencia a express en la variable app
@@ -32,15 +34,15 @@ let Hospital = require('../models/hospital');
 let  app = express();
 
 //=====================================================================
-//Listar todos los hospitales
+//Listar todos los doctores
 //=====================================================================
 //Peticion get
 app.get("/",(request,response)=>{
 
     //para la obtencion de todos los hospitales se utiliza la funcion find sin argumentos
-    Hospital.find({})
+    Doctor.find({})
         .exec(
-            (error,hospitals)=>{
+            (error,doctors)=>{
                 if(error){
                     return response.status(500).json({
                         ok:false,
@@ -50,73 +52,72 @@ app.get("/",(request,response)=>{
                 }else{
                     return response.status(200).json({
                         ok:true,
-                        hospitals:hospitals
+                        doctors:doctors
                     })
                 }
             }
         );
 });
 
+
 //=====================================================================
-//Actualizar hospital
+//Actualizar doctor
 //=====================================================================
 //petición put
 app.put("/:id",mdAuth.verifyToken,(request,response)=>{
 
-    //Obtención del id del hospital que se va ha actualizar mandado como parametro en la URL
-    let hospital_id = request.params.id;
-    //Obtención de los nuevon valores para el usuario mandados en el cuerpo de la petición
+    //Obtención del id del doctor que se va ha actualizar mandado como parametro en la URL
+    let doctor_id = request.params.id;
+    //Obtención de los nuevos valores para el doctor mandados en el cuerpo de la petición
     let body = request.body;
 
-    //Se busca el hospital que se quiere actualizar con la funcion findById()
-    Hospital.findById(hospital_id,(error,hospitalfound)=> {
+    //Se busca el usuario que se quiere actualizar con la funcion findById()
+    Doctor.findById(doctor_id,(error,doctorfound)=> {
 
         //Si hay un error sera error 500
         if(error){
             return response.status(500).json({
                 ok:false,
-                message:"Error al buscar el hospital ",
+                message:"Error al buscar el doctor ",
                 errors:error
             });
         }
 
-        //Si no ha habido ningun error y no se ha obtenido un objeto hospital entonces es que no existe
-        if(!hospitalfound){
+        //Si no ha habido ningun error y no se ha obtenido un doctor  entonces es que no existe
+        if(!doctorfound){
             return response.status(404).json({
                 ok:false,
-                message:"El hospital no se encontro en la base de datos",
+                message:"El doctor no se encontro en la base de datos",
             });
         }
 
-        //En caso de que se halla encontrado el hospital con el id especificado
-        if(hospitalfound){
+        //En caso de que se halla encontrado el doctor con el id especificado
+        if(doctorfound){
 
             //Se comprueba que parametros se han mandado en el body para actualizarlos
-            if(body.hosp_name){
-                hospitalfound.hosp_name = body.hosp_name;
+            if(body.dctr_dni){
+                doctorfound._id = body.dctr_dni;
             }
-            if(body.hosp_img){
-                hospitalfound.hosp_img = body.hosp_img;
+            if(body.dctr_name){
+                doctorfound.dctr_name = body.dctr_name
             }
-            if(body.hosp_user){
-                hospitalfound.hosp_user = body.hosp_user;
+            if(body.dctr_img){
+                doctorfound.dctr_img = body.dctr_img
             }
-
-            if(body.hosp_city){
-                hospitalfound.hosp_city = body.hosp_city;
+            if(body.dctr_user){
+                doctorfound.dctr_user = body.dctr_user
             }
-
-            if(body.hosp_state){
-                hospitalfound.hosp_state = body.hosp_state;
+            if(body.dctr_hospital){
+                doctorfound.dctr_hospital = body.dctr_hospital
             }
 
             //Se aplica la funcion save para guardar los cambios en la base de datos
-            hospitalfound.save((error , hospitalupdated)=>{
+            doctorfound.save((error , doctorupdated)=>{
 
                 if(error){
                     return response.status(403).json({
                         ok:false,
-                        message:"No se pudo actualizar el hospital",
+                        message:"No se pudo actualizar el doctor",
                         errors:error
                     });
                 }else{
@@ -124,9 +125,9 @@ app.put("/:id",mdAuth.verifyToken,(request,response)=>{
 
                     return response.status(200).json({
                         ok:true,
-                        message:"hospital " +hospital_id+" actualizado correctamente",
-                        hospital_updated:hospitalupdated,
-                        updated_by:request.user_token
+                        message:"doctor con dni  " +doctor_id+" actualizado correctamente",
+                        hospital_updated:doctorupdated,
+                        updated_by:doctorupdated.user_token
                     });
                 }
 
@@ -139,8 +140,9 @@ app.put("/:id",mdAuth.verifyToken,(request,response)=>{
 });
 
 
+
 //=====================================================================
-//Insertar hospital
+//Insertar doctor
 //=====================================================================
 //petición post
 app.post("/",mdAuth.verifyToken,(request,response)=> {
@@ -152,18 +154,18 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
     let body = request.body;
 
     /**
-     * Creación de un nuevo objeto hospital basandose en los parametros optenidos del body
+     * Creación de un nuevo objeto doctor basandose en los parametros optenidos del body
      */
-    let hospital = new Hospital({
-        hosp_name:body.hosp_name,
-        hosp_img:body.hosp_img,
-        hosp_city:body.hosp_city,
-        hosp_state:body.hosp_state,
-        hosp_user:request.user_token._id
+    let doctor = new Doctor({
+        _id:body.dctr_dni,
+        dctr_name:body.dctr_name,
+        dctr_img:body.dctr_img,
+        dctr_hospital:body.dctr_hospital,
+        dctr_user:request.user_token._id
     });
     //Para guardar el hospital creado en la base de datos se utilizara la función save
-    hospital.save((error, hospitalSaved) => {
-        //Si ha habido algun error al guardar el hospital el estado sera error 400 y se devolvera el error en el json de salida
+    doctor.save((error,doctorSaved) => {
+        //Si ha habido algun error al guardar el doctor el estado sera error 400 y se devolvera el error en el json de salida
         if (error) {
             return response.status(400).json({
                 ok: false,
@@ -175,8 +177,8 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
 
             return response.status(201).json({
                 ok: true,
-                message: "Hospital "+hospitalSaved.hosp_name+" creado correctamente",
-                hospital_saved:hospitalSaved,
+                message: "Doctor "+doctorSaved.dctr_name+" creado correctamente",
+                doctor_saved:doctorSaved,
                 created_by:request.user_token
             })
         }
@@ -184,38 +186,37 @@ app.post("/",mdAuth.verifyToken,(request,response)=> {
 });
 
 //============================================================
-//Borrar Hospital
+//Borrar Doctor
 //============================================================
 app.delete("/:id",mdAuth.verifyToken,(request , response)=>{
 
-    //Obtención del id del hospital que se va ha borrar mandado como parametro en la URL
-    let hospital_id = request.params.id;
+    //Obtención del id del doctor que se va ha borrar mandado como parametro en la URL
+    let doctor_id = request.params.id;
 
-    Hospital.findByIdAndRemove({_id:hospital_id},(error,hospitalDeleted)=>{
+    Doctor.findByIdAndRemove({_id:doctor_id},(error,doctorDeleted)=>{
         if(error){
             return response.status(500).json({
                 ok:false,
-                message:"Error al borrar el hospital ",
+                message:"Error al borrar el doctor ",
                 errors:error
             });
         }
-        if(!hospitalDeleted){
+        if(!doctorDeleted){
             return response.status(404).json({
                 ok:false,
-                message:"No se pudo encontrar el hospital con el id " + hospital_id,
+                message:"No se pudo encontrar el doctor con el dni " +doctor_id,
                 errors:error
             });
         }
-        if(hospitalDeleted){
+        if(doctorDeleted){
             return response.status(200).json({
                 ok:true,
-                message:"El  hospital "+hospital_id+" se ha borrado correctamente",
-                hospital_deleted:hospitalDeleted,
+                message:"El  doctor con dni "+doctor_id+" se ha borrado correctamente",
+                hospital_deleted:doctorDeleted,
                 deleted_by:request.user_token
             });
         }
     });
-
 
 });
 

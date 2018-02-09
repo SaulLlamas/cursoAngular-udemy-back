@@ -34,12 +34,15 @@ let mongoose_conf = require('./config/mongooseConfig');
 //=======================================================
 //Archivo de rutas principal
 let app_router = require('./router/app.router');
-//Archivo de rutas para user
+//Archivo de rutas para el usuario
 let user_router = require('./router/user.router');
 //Archivo de rutas para el login
 let login_router = require('./router/login.router');
-//Archivo de rutas para hospital
-let hospital_router  = require('./router/hospital.router')
+//Archivo de rutas para los hospitales
+let hospital_router  = require('./router/hospital.router');
+//Archivo de rutas para los doctores
+let doctor_router = require('./router/doctor.router');
+
 
 
 //=======================================================
@@ -60,12 +63,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //=======================================================
-//Middleware de rutas
+//Rutas
 //=========================================================
 app.use('/login',login_router);
 app.use('/user',user_router);
 app.use('/hospital',hospital_router);
+app.use('/doctor',doctor_router);
 app.use('/',app_router);
+
 
 app.listen(express_conf.express_port,()=>{
     //El texto entre \x1b[32m y \x1b[0m saldra por consola de color verde

@@ -74,7 +74,7 @@ app.post("/",(request,response)=>{
                //Por motivos de seguridad no se debe de enviar la contraseña del usuario al front. En su lugar se enviara un string con valor "****"
                user_found.user_password = "****";
                //Definicion del token para la sesión del usuario
-               let token = jwt.sign({user:user_found},token_config.SEED,{expiresIn:14400});
+               let token = jwt.sign({user:user_found},token_config.SEED,{expiresIn:'2 days'});
 
                return response.status(200).json({
                    ok: true,
