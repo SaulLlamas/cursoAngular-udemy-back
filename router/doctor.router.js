@@ -39,8 +39,23 @@ let  app = express();
 //Peticion get
 app.get("/",(request,response)=>{
 
+    /**
+     * start => Posicion del array de resultados desde la cual se empieza a listar
+     * El valor start es dado como parametro opcional en la url en caso de no existir dicho valor start adquiere el valor 0
+     * @type {Number}
+     */
+    let start = request.query.start || 0;
+    start = Number(start);
+
     //para la obtencion de todos los hospitales se utiliza la funcion find sin argumentos
     Doctor.find({})
+        //La funcion populate obtiene los datos de una colección referenciada
+        .populate('dctr_user','user_name user_mail')
+        .populate('dctr_hospital')
+        //La funcion skip salta a la posicion del array de resultados enviada como parametro
+        .skip(start)
+        //La funcion limit limita el numero de resultados
+        .limit(5)
         .exec(
             (error,doctors)=>{
                 if(error){
@@ -50,11 +65,17 @@ app.get("/",(request,response)=>{
                         errors:error
                     })
                 }else{
-                    return response.status(200).json({
-                        ok:true,
-                        doctors:doctors
-                    })
+                    //La funcion count cuenta el numero de documentos obtenidos
+                    Doctor.count({},(error,count)=>{
+                        return response.status(200).json({
+                            ok:true,
+                            showed_results:doctors.length,
+                            total_results:count,
+                            hospitals:doctors
+                        })
+                    });
                 }
+
             }
         );
 });

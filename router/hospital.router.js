@@ -37,8 +37,23 @@ let  app = express();
 //Peticion get
 app.get("/",(request,response)=>{
 
+    /**
+     * start => Posicion del array de resultados desde la cual se empieza a listar
+     * El valor start es dado como parametro opcional en la url en caso de no existir dicho valor start adquiere el valor 0
+     * @type {Number}
+     */
+    let start = request.query.start || 0;
+    start = Number(start);
+
     //para la obtencion de todos los hospitales se utiliza la funcion find sin argumentos
     Hospital.find({})
+        //La funcion populate obtiene los datos de una colección referenciada
+        .populate('hosp_user','user_name user_mail')
+        //La funcion skip salta a la posicion del array de resultados enviada como parametro
+        .skip(start)
+        //La funcion limit limita el numero de resultados
+        .limit(5)
+
         .exec(
             (error,hospitals)=>{
                 if(error){
@@ -48,10 +63,15 @@ app.get("/",(request,response)=>{
                         errors:error
                     })
                 }else{
-                    return response.status(200).json({
-                        ok:true,
-                        hospitals:hospitals
-                    })
+                    //La funcion count cuenta el numero de documentos obtenidos
+                    Hospital.count({},(error,count)=>{
+                        return response.status(200).json({
+                            ok:true,
+                            showed_results:hospitals.length,
+                            total_results:count,
+                            hospitals:hospitals
+                        })
+                    });
                 }
             }
         );
@@ -67,6 +87,7 @@ app.put("/:id",mdAuth.verifyToken,(request,response)=>{
     let hospital_id = request.params.id;
     //Obtención de los nuevon valores para el usuario mandados en el cuerpo de la petición
     let body = request.body;
+
 
     //Se busca el hospital que se quiere actualizar con la funcion findById()
     Hospital.findById(hospital_id,(error,hospitalfound)=> {

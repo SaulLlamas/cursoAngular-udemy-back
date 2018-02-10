@@ -38,8 +38,19 @@ let  app = express();
 //Peticion get
 app.get("/",(request,response)=>{
 
+    /**
+     * start => Posicion del array de resultados desde la cual se empieza a listar
+     * El valor start es dado como parametro opcional en la url en caso de no existir dicho valor start adquiere el valor 0
+     * @type {Number}
+     */
+    let start = request.query.start || 0;
+    start = Number(start)
 
     User.find({},'user_name user_sex user_mail user_img user_role')
+        //La funcion skip salta a la posicion del array de resultados enviada como parametro
+        .skip(start)
+        //La funcion limit limita el numero de resultados
+        .limit(5)
         .exec(
             (error,users)=>{
             if(error){
@@ -49,10 +60,15 @@ app.get("/",(request,response)=>{
                     errors:error
                 })
             }else{
-                return response.status(200).json({
-                    ok:true,
-                    users:users
-                })
+                //La funcion count cuenta el numero de documentos obtenidos
+                User.count({},(error,count)=>{
+                    return response.status(200).json({
+                        ok:true,
+                        showed_results:users.length,
+                        total_results:count,
+                        hospitals:users
+                    })
+                });
             }
         });
 });
