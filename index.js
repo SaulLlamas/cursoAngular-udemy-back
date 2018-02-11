@@ -42,7 +42,8 @@ let login_router = require('./router/login.router');
 let hospital_router  = require('./router/hospital.router');
 //Archivo de rutas para los doctores
 let doctor_router = require('./router/doctor.router');
-
+//Archivo de rutas para todas las colecciones de la base de datos
+let search_router = require('./router/search.router');
 
 
 //=======================================================
@@ -69,6 +70,7 @@ app.use('/login',login_router);
 app.use('/user',user_router);
 app.use('/hospital',hospital_router);
 app.use('/doctor',doctor_router);
+app.use('/search',search_router);
 app.use('/',app_router);
 
 
