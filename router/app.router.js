@@ -1,6 +1,6 @@
 /**
- * @summary Fichero de configuración de rutas
- * @description Fichero principal de configuracion de rutas a las que se va a hacer peticiones
+ * @summary Fichero de rutas
+ * @description Fichero principal de rutas
  * @author Saul Llamas Parra
  * @version 1.0
  * @since 02-02-18

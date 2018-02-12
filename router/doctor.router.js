@@ -1,6 +1,6 @@
 /**
- * @summary Fichero de configuración de rutas relacionadas con el doctor
- * @description Fichero de configuracion de rutas a las que se va a hacer peticiones relacionanas con el objeto doctor
+ * @summary Fichero de rutas relacionadas con los doctores
+ * @description Fichero que tratara las peticiones GET , POST , PUT y DELETE relacionadas con los doctores
  * @author Saul Llamas Parra
  * @version 1.0
  * @since 09-02-18

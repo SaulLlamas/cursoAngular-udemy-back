@@ -44,6 +44,8 @@ let hospital_router  = require('./router/hospital.router');
 let doctor_router = require('./router/doctor.router');
 //Archivo de rutas para todas las colecciones de la base de datos
 let search_router = require('./router/search.router');
+//Archivo de rutas para la subida de archivos
+let upload_router = require('./router/upload.router')
 
 
 //=======================================================
@@ -66,6 +68,7 @@ app.use(bodyParser.json());
 //=======================================================
 //Rutas
 //=========================================================
+app.use('/upload',upload_router)
 app.use('/login',login_router);
 app.use('/user',user_router);
 app.use('/hospital',hospital_router);

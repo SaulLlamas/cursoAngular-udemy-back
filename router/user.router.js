@@ -1,6 +1,6 @@
 /**
- * @summary Fichero de configuración de rutas relacionadas con el usuario
- * @description Fichero de configuracion de rutas a las que se va a hacer peticiones relacionanas con el usuario
+ * @summary Fichero de rutas relacionadas con los usuarios
+ * @description Fichero que tratara las peticiones GET , POST , PUT y DELETE relacionadas con los usuarios
  * @author Saul Llamas Parra
  * @version 1.0
  * @since 02-02-18
