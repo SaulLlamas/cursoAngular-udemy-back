@@ -13,6 +13,10 @@
 let express = require('express');
 //Importacion de la libreria de express que permitira subir archivos
 let fileupload = require('express-fileupload');
+// Importación de las depaendencias para tratar con el sistema de archivos
+//let file_system  = require('file-system')
+let fs = require('fs');
+
 
 
 //============================================================
@@ -20,6 +24,17 @@ let fileupload = require('express-fileupload');
 //============================================================
 //Middleware de autentificación
 let mdAuth = require('../middlewares/auth');
+
+
+//=======================================================
+//Importación de los modelos utilizados
+//=======================================================
+//Importación del modelo Hospital
+let Hospital = require('../models/hospital');
+//Importación del modelo Doctor
+let Doctor = require('../models/doctor');
+//Importación del modelo User
+let User = require('../models/user');
 
 
 /**
@@ -124,22 +139,238 @@ app.put("/:element/:id",(request,response)=>{
 
 
         file_upload.mv(path,error =>{
-            return response.status(500).json({
-                ok: false,
-                message:'error al mover el archivo',
-                errors: error
-            })
+
+            if(error) {
+                return response.status(500).json({
+                    ok: false,
+                    message: 'error al mover el archivo',
+                    errors: error
+                })
+            }else{
+
+                updateImageIndb(element,id,file_upload_name,response);
+
+            }
+
         });
-
-        return response.status(200).json({
-            ok: false,
-            message:'Archivo subido correctamente',
-        })
-
 
     }
 
+
+    /**
+     * updateImageIndb()=> Se ejecuta despues de subir la imagen al servidor y se encarga de actualizar la imagen en la base de datos
+     * @param collection => colecion de la base de datos que se va a actualizar
+     * @param document_id => identificación del documento donde se va a actualizar la imagen
+     * @param file_name => nuevo valor para el nombre del archivo de la imagen
+     * @param response
+     */
+    function updateImageIndb(collection , document_id , file_name , response ) {
+
+        /**
+         * oldpath => guarda el path de la imagen que se va a cambiar
+         * @type {string}
+         */
+        let oldpath = "" ;
+
+
+        switch(collection){
+
+            case 'doctors':
+
+                //Se busca en la colecion dostors el doctor con el id espeficicado en los parametros de la función
+                Doctor.findById(document_id,(error , doctor_found)=> {
+
+                    //Si ha habido un error al realizar la conexion sera error 500
+                    if (error) {
+                        return response.status(500).json({
+                            ok: false,
+                            message: "Error al buscar el doctor",
+                            errors: error
+                        });
+                    }
+
+                    //Si no se ha encontrado el doctor para actualizar sera error 400
+                    if (!doctor_found) {
+                        return response.status(400).json({
+                            ok: false,
+                            message: "No ha podido cambiar la imagen porque no se encontro el doctor",
+                            errors: error
+                        });
+                    }
+
+                    //Si se encontro el doctor se procede a la actualizacion de la imagen
+                    if(doctor_found){
+
+                         oldpath = "./upload_files/doctors/"+doctor_found.dctr_img;
+
+                         //Ufilizando el sistema de archivos se combrueba si existe algun archivo con el path guardado en oldpath
+                         if(fs.existsSync(oldpath)){
+                             ///Si existe el archivo se borra
+                             fs.unlink(oldpath);
+                         }
+
+                        doctor_found.dctr_img = file_name;
+
+                        doctor_found.save((error,doctor_updated) =>{
+
+                             if(error){
+                                 return response.status(500).json({
+                                     ok: false,
+                                     message: "Error al guardar imagen en la dase de datos",
+                                     errors: error
+                                 });
+                             }else {
+
+                                return response.status(200).json({
+                                    ok: true,
+                                    message: "Imagen actualizada correctamente",
+                                    doctor_updated: doctor_updated
+                                });
+
+                             }
+
+                        })
+
+                    }
+
+                });
+
+                break;
+
+            case 'hospitals':
+
+                //Se busca en la colecion hospitals el hospital con el id espeficicado en los parametros de la función
+                Hospital.findById(document_id,(error , hospital_found)=> {
+
+                    //Si ha habido un error al realizar la conexion sera error 500
+                    if (error) {
+                        return response.status(500).json({
+                            ok: false,
+                            message: "Error al buscar el hospital",
+                            errors: error
+                        });
+                    }
+
+                    //Si no se ha encontrado el doctor para actualizar sera error 400
+                    if (!hospital_found) {
+                        return response.status(400).json({
+                            ok: false,
+                            message: "No ha podido cambiar la imagen porque no se encontro el hospital",
+                            errors: error
+                        });
+                    }
+
+                    //Si se encontro el hospital se procede al cambio de la imagen
+                    if(hospital_found){
+
+                        oldpath = "./upload_files/hospitals/"+hospital_found.hosp_img;
+
+                        //Ufilizando el sistema de archivos se combrueba si existe algun archivo con el path guardado en oldpath
+                        if(fs.existsSync(oldpath)){
+                            ///Si existe el archivo se borra
+                            fs.unlink(oldpath);
+                        }
+
+                        hospital_found.hosp_img = file_name;
+
+                        hospital_found.save((error,hospital_updated) =>{
+
+                            if(error){
+                                return response.status(500).json({
+                                    ok: false,
+                                    message: "Error al guardar imagen en la dase de datos",
+                                    errors: error
+                                });
+                            }else {
+
+                                return response.status(200).json({
+                                    ok: true,
+                                    message: "Imagen actualizada correctamente",
+                                    doctor_updated:hospital_updated
+                                });
+
+                            }
+
+                        })
+
+                    }
+
+                });
+
+                break;
+
+            case 'users':
+
+
+                //Se busca en la colecion users el usuario con el id espeficicado en los parametros de la función
+                User.findById(document_id,(error , user_found)=> {
+
+                    //Si ha habido un error al realizar la conexion sera error 500
+                    if (error) {
+                        return response.status(500).json({
+                            ok: false,
+                            message: "Error al buscar el usuario",
+                            errors: error
+                        });
+                    }
+
+                    //Si no se ha encontrado el doctor para actualizar sera error 400
+                    if (!user_found) {
+                        return response.status(400).json({
+                            ok: false,
+                            message: "No ha podido cambiar la imagen porque no se encontro el usuario",
+                            errors: error
+                        });
+                    }
+
+                    //Si se encontro el usuario se procede al cambio de la imagen
+                    if(user_found){
+
+                        oldpath = "./upload_files/users/"+user_found.user_img;
+
+                        //Ufilizando el sistema de archivos se combrueba si existe algun archivo con el path guardado en oldpath
+                        if(fs.existsSync(oldpath)){
+                            ///Si existe el archivo se borra
+                            fs.unlink(oldpath);
+                        }
+
+                        user_found.user_img = file_name;
+
+                        user_found.save((error,user_updated) =>{
+
+                            if(error){
+                                return response.status(500).json({
+                                    ok: false,
+                                    message: "Error al guardar imagen en la dase de datos",
+                                    errors: error
+                                });
+                            }else {
+
+                                return response.status(200).json({
+                                    ok: true,
+                                    message: "Imagen actualizada correctamente",
+                                    doctor_updated:user_updated
+                                });
+
+                            }
+
+                        })
+
+                    }
+
+                });
+
+                break;
+
+        }
+
+    }
+
+
 });
+
+
+
 
 
 module.exports = app;
