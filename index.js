@@ -46,7 +46,8 @@ let doctor_router = require('./router/doctor.router');
 let search_router = require('./router/search.router');
 //Archivo de rutas para la subida de archivos
 let upload_router = require('./router/upload.router')
-
+//Archivo de rutas para obtencion de avatares
+let avatar_router = require('./router/image.router')
 
 //=======================================================
 //Inicializacion de constantes
@@ -68,7 +69,8 @@ app.use(bodyParser.json());
 //=======================================================
 //Rutas
 //=========================================================
-app.use('/upload',upload_router)
+app.use('/image',avatar_router)
+app.use('/upload',upload_router);
 app.use('/login',login_router);
 app.use('/user',user_router);
 app.use('/hospital',hospital_router);
