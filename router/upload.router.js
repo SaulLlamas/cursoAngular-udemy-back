@@ -336,6 +336,8 @@ app.put("/:element/:id",(request,response)=>{
 
                         user_found.user_img = file_name;
 
+                        user_found.user_password = "****"
+
                         user_found.save((error,user_updated) =>{
 
                             if(error){
