@@ -36,8 +36,7 @@ const UserSchema = Schema({
     },
     //Sexo del usuario
     user_sex:{
-        type:String,
-        required:true
+        type:String
     },
     //Mail del usuario
     user_mail:{
@@ -61,6 +60,11 @@ const UserSchema = Schema({
         required:true,
         default:'normal',
         enum:validRoles
+    },
+    user_google_auth:{
+        type:Boolean,
+        required:true,
+        default:false
     }
 });
 
