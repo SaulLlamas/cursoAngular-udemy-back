@@ -1,6 +1,6 @@
 /**
- * @summary Fichero de rutas
- * @description Fichero de rutas para obtención de un avatar desde el cliente
+ * @summary Fichero de rutas de imagen
+ * @description Fichero de rutas al que se haran llamadas desde el cliente para obtener imagenes
  * @author Saul Llamas Parra
  * @version 1.0
  * @since 14-02-18
@@ -11,40 +11,17 @@
 //Importación de express
 let express = require('express');
 //let file_system  = require('file-system')
-let fs = require('fs');
+//let fs = require('fs');
 
+//============================================================
+//Importación de servicios
+//============================================================
+let image_service = require('../services/image.service');
 
 let  app = express();
 
 //Peticion get
-app.get("/:element/:img",(request,response)=>{
-
-    /**
-     * element => elemento al que pertenece la imagen
-     * @type {string}
-     */
-    let elemnet = request.params.element;
-    /**
-     * img => Imagen del avatar del elemento
-     * @type {string}
-     */
-    let img = request.params.img;
-
-    /**
-     * path => path de la imagen
-     * @type {string}
-     */
-    let path = `./upload_files/${elemnet}/${img}`;
-
-    //Si el arvhivo de la imagen no se encuentra se le asignara la imagen por defecto
-    if(!fs.existsSync(path)){
-        path = './assets/images/no-img.jpg'
-    }
-
-
-    response.sendFile(path,{root:'.'});
-
-});
+app.get("/:element/:img",image_service.getImage);
 
 
 module.exports = app;
