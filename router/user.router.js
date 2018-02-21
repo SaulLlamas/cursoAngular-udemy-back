@@ -39,7 +39,7 @@ app.get("/",userService.paginateUsers);
 app.put("/:id",mdAuth.verifyToken,userService.updateUser);
 
 //petición post para agregar un nuevo usuario
-app.post("/",mdAuth.verifyToken,userService.insertUser);
+app.post("/",userService.insertUser);
 
 //petición delete para borrar el usuario
 app.delete("/:id",mdAuth.verifyToken,userService.deleteUser);

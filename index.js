@@ -58,6 +58,22 @@ let avatar_router = require('./router/image.router')
  */
 const app = express();
 
+//============================================================
+//Middleware de CORS => Configura las peticiones
+//============================================================
+app.use(function(req, res, next) {
+    //Configuracio de los equipos desde los cuales se puede hacer peticiones
+    //En el caso de que el valor sea * seran todos los equipos
+    res.header("Access-Control-Allow-Origin", "*");
+    //Configuracion de los tipos de origenes desde los que se permitira realizar peticiones
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    //Comfiguracion de los tipos de peticiones que se van a admitir
+    res.header("Access-Control-Allow-Methods","POST , GET , PUT , DELETE , OPTIONS")
+    next();
+});
+
+
+
 //=======================================================
 //Middleware de body-parser => Permite parsear la informacion de la peticiones a formato json
 //=========================================================
