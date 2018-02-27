@@ -34,10 +34,10 @@ const UserSchema = Schema({
         type:String,
         required:true
     },
-    //Sexo del usuario
+  /*  //Sexo del usuario
     user_sex:{
         type:String
-    },
+    },*/
     //Mail del usuario
     user_mail:{
         type:String,

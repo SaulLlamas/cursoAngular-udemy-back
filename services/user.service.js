@@ -21,7 +21,7 @@ let User = require('../models/user');
 
 module.exports.getAllUsers =(request,response) =>{
 
-    User.find({},'user_name user_sex user_mail user_img user_role')
+    User.find({},'user_name user_mail user_img user_role')
         .exec(
             (error,users)=>{
                 if(error){
@@ -37,7 +37,7 @@ module.exports.getAllUsers =(request,response) =>{
                             ok:true,
                             showed_results:users.length,
                             total_results:count,
-                            hospitals:users
+                            users:users
                         })
                     });
                 }
@@ -64,7 +64,7 @@ module.exports.paginateUsers = (request ,response)=> {
 
 
 
-    User.find({},'user_name user_sex user_mail user_img user_role')
+    User.find({},'user_name user_mail user_img user_role')
     //La funcion skip salta a la posicion del array de resultados enviada como parametro
         .skip(start)
         //La funcion limit limita el numero de resultados
@@ -130,9 +130,6 @@ module.exports.updateUser = (request,response)=>{
             if(body.user_name){
                 userfound.user_name = body.user_name
             }
-            if(body.user_sex){
-                userfound.user_sex = body.user_sex
-            }
             if(body.user_mail){
                 userfound.user_mail = body.user_mail
             }
@@ -189,7 +186,6 @@ module.exports.insertUser = (request , response)=>{
      */
     let user = new User({
         user_name: body.user_name,
-        user_sex: body.user_sex,
         //Para encriptar la contraseña del usuario se utiliza la funcion hashSync de bcriptjs
         user_password: bcryptjs.hashSync(body.user_password, 10),
         user_mail: body.user_mail,

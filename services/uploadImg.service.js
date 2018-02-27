@@ -353,8 +353,6 @@ function updateImageIndb(collection , document_id , file_name , response ) {
 
                     user_found.user_img = file_name;
 
-                    user_found.user_password = "****";
-
                     user_found.save((error,user_updated) =>{
 
                         if(error){
@@ -364,6 +362,8 @@ function updateImageIndb(collection , document_id , file_name , response ) {
                                 errors: error
                             });
                         }else {
+
+                            user_updated.user_password="****";
 
                             return response.status(200).json({
                                 ok: true,
