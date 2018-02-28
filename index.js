@@ -1,7 +1,7 @@
 /**
  * @summary Punto de entrada
  * @description Punto de entrada a la aplicación
- * @author Saul Llamas Parra
+ * @author Saúl Llamas Parra
  * @version 1.0
  * @since 31-01-18
  */
