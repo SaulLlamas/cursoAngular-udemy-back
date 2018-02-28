@@ -66,7 +66,7 @@ app.use(function(req, res, next) {
     //En el caso de que el valor sea * seran todos los equipos
     res.header("Access-Control-Allow-Origin", "*");
     //Configuracion de los tipos de origenes desde los que se permitira realizar peticiones
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept , Authorization");
     //Comfiguracion de los tipos de peticiones que se van a admitir
     res.header("Access-Control-Allow-Methods","POST , GET , PUT , DELETE , OPTIONS")
     next();
