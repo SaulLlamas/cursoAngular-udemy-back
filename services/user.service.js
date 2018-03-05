@@ -21,7 +21,7 @@ let User = require('../models/user');
 
 module.exports.getAllUsers =(request,response) =>{
 
-    User.find({},'user_name user_mail user_img user_role')
+    User.find({},'user_name user_mail user_img user_role user_google_auth')
         .exec(
             (error,users)=>{
                 if(error){
@@ -64,7 +64,7 @@ module.exports.paginateUsers = (request ,response)=> {
 
 
 
-    User.find({},'user_name user_mail user_img user_role')
+    User.find({},'user_name user_mail user_img user_role user_google_auth')
     //La funcion skip salta a la posicion del array de resultados enviada como parametro
         .skip(start)
         //La funcion limit limita el numero de resultados
@@ -84,7 +84,7 @@ module.exports.paginateUsers = (request ,response)=> {
                             ok:true,
                             showed_results:users.length,
                             total_results:count,
-                            hospitals:users
+                            users:users
                         })
                     });
                 }
