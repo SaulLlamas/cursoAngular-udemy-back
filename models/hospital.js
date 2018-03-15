@@ -46,7 +46,8 @@ const HospitalSchema = Schema({
     },
    //Imagen del hospital
    hosp_img:{
-       type:String
+       type:String,
+       required:false
    },
    //Referencia al usuario que creo al hospital
    hosp_user:{

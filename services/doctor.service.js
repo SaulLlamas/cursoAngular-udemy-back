@@ -34,7 +34,7 @@ module.exports.getAllDoctors = (request, response)=>{
                             ok:true,
                             showed_results:doctors.length,
                             total_results:count,
-                            hospitals:doctors
+                            doctors:doctors
                         })
                     });
                 }
@@ -76,13 +76,49 @@ module.exports.paginateDoctors = (request, response)=>{
                             ok:true,
                             showed_results:doctors.length,
                             total_results:count,
-                            hospitals:doctors
+                            doctors:doctors
                         })
                     });
                 }
 
             }
         );
+};
+
+module.exports.getDoctor = (request ,response)=>{
+
+    let id = request.params.id;
+
+    Doctor.findById(id)
+    //La funcion populate obtiene los datos de una colección referenciada
+        .populate('dctr_user','user_name user_img user_mail')
+        .populate('dctr_hospital')
+        .exec((error,hospital)=>{
+
+            //Si ha habido un error se manda un estado 500 con el error
+            if (error) {
+                return response.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar médico',
+                    errors: error
+                });
+            }
+            //Si no se encontro el medico el estado es 404
+            if (!hospital) {
+                return response.status(404).json({
+                    ok: false,
+                    message: 'El medico no existe'
+                })
+            }
+
+            if(hospital){
+                return response.status(200).json({
+                    ok: true,
+                    doctor: doctor
+                })
+            }
+
+        });
 };
 
 module.exports.updateDoctors = (request, response)=>{
@@ -115,9 +151,6 @@ module.exports.updateDoctors = (request, response)=>{
         if(doctorfound){
 
             //Se comprueba que parametros se han mandado en el body para actualizarlos
-            if(body.dctr_dni){
-                doctorfound._id = body.dctr_dni;
-            }
             if(body.dctr_name){
                 doctorfound.dctr_name = body.dctr_name
             }
@@ -142,7 +175,7 @@ module.exports.updateDoctors = (request, response)=>{
 
                     return response.status(200).json({
                         ok:true,
-                        message:"doctor con dni  " +doctor_id+" actualizado correctamente",
+                        message:"doctor " +doctor_id+" actualizado correctamente",
                         doctor_updated:doctorupdated,
                         updated_by:doctorupdated.user_token
                     });
@@ -167,7 +200,6 @@ module.exports.insertDoctors = (request, response)=>{
      * Creación de un nuevo objeto doctor basandose en los parametros optenidos del body
      */
     let doctor = new Doctor({
-        _id:body.dctr_dni,
         dctr_name:body.dctr_name,
         dctr_hospital:body.dctr_hospital,
         dctr_user:request.user_token._id
@@ -178,7 +210,7 @@ module.exports.insertDoctors = (request, response)=>{
         if (error) {
             return response.status(400).json({
                 ok: false,
-                message: "Error al guardar el hospital",
+                message: "Error al guardar el doctor",
                 errors: error
             })
             //En caso de que no halla habido ningun error el estado sera 201 y se  devolvera el objeto creado
@@ -210,14 +242,14 @@ module.exports.deleteDoctors = (request, response)=>{
         if(!doctorDeleted){
             return response.status(404).json({
                 ok:false,
-                message:"No se pudo encontrar el doctor con el dni " +doctor_id,
+                message:"No se pudo encontrar el doctor ",
                 errors:error
             });
         }
         if(doctorDeleted){
             return response.status(200).json({
                 ok:true,
-                message:"El  doctor con dni "+doctor_id+" se ha borrado correctamente",
+                message:"El  doctor  "+doctor_id+" se ha borrado correctamente",
                 doctor_deleted:doctorDeleted,
                 deleted_by:request.user_token
             });

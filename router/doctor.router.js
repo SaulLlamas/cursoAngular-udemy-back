@@ -38,6 +38,9 @@ app.get("/all",doctorService.getAllDoctors);
 //Peticion get para obtener los doctores paginados
 app.get("/",doctorService.paginateDoctors);
 
+//peticion para obtener un hospital
+app.get("/:id",doctorService.getDoctor);
+
 //Peticion put para actualizar un doctor existente
 app.put("/:id",mdAuth.verifyToken,doctorService.updateDoctors);
 

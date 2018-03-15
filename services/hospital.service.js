@@ -96,6 +96,41 @@ module.exports.paginateHospitals = (request ,response)=> {
 
 };
 
+module.exports.getHospital = (request,response)=>{
+
+    let id = request.params.id;
+
+    Hospital.findById(id)
+        //La funcion populate obtiene los datos de una colección referenciada
+        .populate('hosp_user','user_name user_img user_mail')
+        .exec((error,hospital)=>{
+
+                    //Si ha habido un error se manda un estado 500 con el error
+                    if (error) {
+                        return response.status(500).json({
+                            ok: false,
+                            mensaje: 'Error al buscar hospital',
+                            errors: error
+                        });
+                    }
+                    //Si no se encontro el hospital el estado es 404
+                    if (!hospital) {
+                        return response.status(404).json({
+                            ok: false,
+                            message: 'El hospital no existe'
+                        })
+                    }
+
+                    if(hospital){
+                        return response.status(200).json({
+                            ok: true,
+                            hospital: hospital
+                        })
+                    }
+
+        });
+};
+
 /**
  * @description Actualiza un hospital de la base de datos
  * @param request

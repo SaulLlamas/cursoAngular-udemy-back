@@ -30,11 +30,7 @@ const Hospital  = mongoose.model("Hospital");
 
 
 const DoctorSchema = Schema({
-    //Identificación del doctor
-    _id:{
-        type:String,
-        required:true
-    },
+
     //Nombre completo del doctor
     dctr_name:{
         type:String,

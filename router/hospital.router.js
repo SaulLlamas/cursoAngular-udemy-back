@@ -36,6 +36,9 @@ app.get("/all",hospital_service.getAllHospitals);
 //Peticion get para obtener los hospitales paginados
 app.get("/",hospital_service.paginateHospitals);
 
+//peticion para obtener un hospital
+app.get("/:id",hospital_service.getHospital);
+
 //Peticion put para actualizar un hospital existente
 app.put("/:id",mdAuth.verifyToken,hospital_service.updateHospital);
 
