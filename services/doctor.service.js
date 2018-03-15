@@ -93,7 +93,7 @@ module.exports.getDoctor = (request ,response)=>{
     //La funcion populate obtiene los datos de una colección referenciada
         .populate('dctr_user','user_name user_img user_mail')
         .populate('dctr_hospital')
-        .exec((error,hospital)=>{
+        .exec((error,doctor)=>{
 
             //Si ha habido un error se manda un estado 500 con el error
             if (error) {
