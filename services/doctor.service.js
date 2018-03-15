@@ -104,14 +104,14 @@ module.exports.getDoctor = (request ,response)=>{
                 });
             }
             //Si no se encontro el medico el estado es 404
-            if (!hospital) {
+            if (!doctor) {
                 return response.status(404).json({
                     ok: false,
                     message: 'El medico no existe'
                 })
             }
 
-            if(hospital){
+            if(doctor){
                 return response.status(200).json({
                     ok: true,
                     doctor: doctor
