@@ -80,6 +80,7 @@ module.exports.authUser = (request,response)=>{
                     ok: true,
                     message: "Correcto ",
                     user: user_found,
+                    menu: getmenu(user_found.user_role),
                     token:token
                 })
             }
@@ -152,6 +153,7 @@ module.exports.authGoogleUser = (request,response)=>{
                                 ok: true,
                                 message: "Correcto ",
                                 user: user_found,
+                                menu: getmenu(user_found.user_role),
                                 token:token
                             })
 
@@ -185,7 +187,9 @@ module.exports.authGoogleUser = (request,response)=>{
                                 return response.status(201).json({
                                     ok: true,
                                     message: "Usuario guardado correctamente",
-                                    user_saved: userSaved,
+                                    user: userSaved,
+                                    menu:getmenu(userSaved.user_role),
+                                    token:token,
                                     created_by:request.user_token
                                 })
                             }
@@ -201,5 +205,41 @@ module.exports.authGoogleUser = (request,response)=>{
             });
     }
 };
+
+
+function getmenu(user_role) {
+
+     let menu =[
+        {
+            title:'Principal',
+            icon:'mdi mdi-gauge',
+            submenu:[
+                {title:'Dashboard',url:'/dashboard'},
+                {title:'Graficos',url:'/graphics'},
+                {title:'Incrementador Progress',url:'/progress'},
+                {title:'Promesas',url:'/promises'},
+                {title:'Obserbadores',url:'/rxjs'}
+            ]
+        },
+         {
+             title:'Mantenimientos',
+             icon:'mdi mdi-folder-lock-open',
+             submenu:[
+                 {title:'Hostitales',url:'/hospitals'},
+                 {title:'Médicos',url:'/doctors'}
+             ]
+         }
+    ];
+
+
+     if(user_role === 'admin'){
+        menu[1].submenu.unshift( {title:'Usuarios',url:'/users'});
+     }
+
+
+    return menu
+
+
+}
 
 

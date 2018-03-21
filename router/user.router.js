@@ -36,13 +36,13 @@ app.get("/all",userService.getAllUsers);
 app.get("/",userService.paginateUsers);
 
 //Peticion put para actualizar un usuario existente
-app.put("/:id",mdAuth.verifyToken,userService.updateUser);
+app.put("/:id",[mdAuth.verifyToken,mdAuth.verifyPermission],userService.updateUser);
 
 //petición post para agregar un nuevo usuario
 app.post("/",userService.insertUser);
 
 //petición delete para borrar el usuario
-app.delete("/:id",mdAuth.verifyToken,userService.deleteUser);
+app.delete("/:id",[mdAuth.verifyToken,mdAuth.verifyPermission],userService.deleteUser);
 
 //Exportacion del  modulo
 module.exports = app;

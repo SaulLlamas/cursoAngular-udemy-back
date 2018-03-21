@@ -197,7 +197,7 @@ function searchUsers(search_criteria , regexp){
 
     return new  Promise((resolve, reject)=>{
 
-        User.find({},'user_name user_mail user_role')
+        User.find({},'user_name user_mail user_img user_role')
             .or([{user_name:regexp} , {user_mail:regexp}])
             .exec((error,usersFound)=>{
 

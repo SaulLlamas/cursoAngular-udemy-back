@@ -56,3 +56,34 @@ exports.verifyToken = function (request, response , next) {
 
 
 };
+
+
+
+
+
+/**
+* verifyAdmin()=> Verifica si el usuario que realiza la petición tiene los permisos necesarios
+* @param request => Petición
+* @param response => Respuesta
+* @param next
+* @return {*}
+*/
+exports.verifyPermission = function (request, response , next) {
+
+    let user = request.user_token;
+
+    let id = request.params.id;
+
+    if(user.user_role === "admin" || id === user._id){
+        next();
+        return
+    }else{
+        return response.status(401).json({
+            ok:false,
+            message:'No tienes permiso de administrador',
+            error:{message:'Se necesitan permisos de administrador'}
+        })
+    }
+
+
+};

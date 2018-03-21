@@ -26,10 +26,10 @@ let  app = express();
 
 
 
-//Autentificacion normal
+//Autentificación normal
 app.post("/",login_service.authUser);
 
-//Autentificacion con cuenta de google
+//Autentificación con cuenta de google
 app.post('/google',login_service.authGoogleUser);
 
 
