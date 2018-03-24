@@ -54,7 +54,7 @@ module.exports.authUser = (request,response)=>{
         if(!user_found){
             return response.status(400).json({
                 ok: false,
-                message: "No existe ningun usuario con el correo electronico "+body.user_mail,
+                message: "Los datos son incorrectos",
                 errors: error
             })
         }
@@ -66,7 +66,7 @@ module.exports.authUser = (request,response)=>{
             if(!bcryptjs.compareSync(body.user_password , user_found.user_password)){
                 return response.status(400).json({
                     ok: false,
-                    message: "Password incorrecto ",
+                    message: "Los datos son incorrectos ",
                     errors: error
                 })
             }else{

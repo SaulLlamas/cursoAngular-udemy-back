@@ -165,7 +165,7 @@ module.exports.updateDoctors = (request, response)=>{
             doctorfound.save((error , doctorupdated)=>{
 
                 if(error){
-                    return response.status(403).json({
+                    return response.status(400).json({
                         ok:false,
                         message:"No se pudo actualizar el doctor",
                         errors:error

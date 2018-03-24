@@ -140,13 +140,14 @@ module.exports.updateUser = (request,response)=>{
             //Se aplica la funcion save para guardar los cambios en la base de datos
             userfound.save((error , userupdated)=>{
 
-                if(error){
-                    return response.status(403).json({
-                        ok:false,
-                        message:"No se pudo actualizar el usuario "+id+" ",
-                        errors:error
+                if(error) {
+                    return response.status(400).json({
+                        ok: false,
+                        message: "Error al actualizar el usuario ",
+                        errors: error
                     });
                 }else{
+
 
                     //La contraseña del usuario nunca se envia al front tal como esta en la base de datos
                     userupdated.user_password = "****";
@@ -250,3 +251,5 @@ module.exports.deleteUser = (request,response)=>{
         }
     });
 };
+
+
