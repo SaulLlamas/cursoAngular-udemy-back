@@ -16,7 +16,13 @@ let express = require('express');
 //Importacion de servicios
 //============================================================
 //Importación del servicio de login
-let login_service = require('../services/login.service')
+let login_service = require('../services/login.service');
+
+
+//============================================================
+//Importación de middlewares
+//============================================================
+let mdAuth = require('../middlewares/auth');
 
 /**
  * Referencia a express en la variable app
@@ -24,7 +30,7 @@ let login_service = require('../services/login.service')
  */
 let  app = express();
 
-
+app.get('/renewtoken',mdAuth.verifyToken,login_service.renewToken);
 
 //Autentificación normal
 app.post("/",login_service.authUser);

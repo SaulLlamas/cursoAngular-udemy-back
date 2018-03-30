@@ -28,6 +28,17 @@ let token_config = require('../config/tokenConfig');
 //Importacion del modelo user
 let User = require('../models/user');
 
+module.exports.renewToken = (request,response)=>{
+
+    //Se creara un token que expirara en 4 horas
+    let token = jwt.sign({user:request.user_token},token_config.SEED,{expiresIn:'1440'});
+
+    response.status(200).json({
+        ok:true,
+        token:token
+    });
+
+};
 
 /**
  * @summary authUser
@@ -147,6 +158,7 @@ module.exports.authGoogleUser = (request,response)=>{
                             //Por motivos de seguridad no se debe de enviar la contraseña del usuario al front. En su lugar se enviara un string con valor "****"
                             user_found.user_password = "****";
                             //Definicion del token para la sesión del usuario
+                            //El token expira en 2 dias
                             let token = jwt.sign({user:user_found},token_config.SEED,{expiresIn:'2 days'});
 
                             return response.status(200).json({
